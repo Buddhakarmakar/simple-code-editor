@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/dist/output.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container h-screen mx-auto bg-pink-300">
+      <div class="flex bg-gray-600 font-medium px-4 h-16 w-full items-center">
+        <div class="flex-1 items-center space-x-2 p-2 text-sky-600 text-lg">
+          Code Editor
+        </div>
+        <div class="flex justify-center space-x-4 items-center">
+          <select class="px-4 py-2 rounded bg-slate-700 text-white">
+            <option>Java</option>
+            <option>Python</option>
+            <option>Javascript</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="relative w-full h-3/4 border font-medium">
+        <textarea
+          id="editor"
+          autofocus
+          class="w-full h-full overflow-y-auto leading-6 bg-slate-800 caret-white text-white px-10 py-2 resize-none"
+          placeholder="write your code here ...."
+        ></textarea>
+        <div
+          id="lineNumberDiv"
+          class="absolute bg-slate-900 w-8 h-full flex flex-col top-0 text-gray-400 text-center py-2"
+        >
+          <p>1</p>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    var editor = document.querySelector("#editor");
+
+    var lineNumberDiv = document.querySelector("#lineNumberDiv");
+
+    editor.addEventListener("keydown", (e) => {
+      let data = editor.value.split("\n");
+      let len = data.length;
+
+      lineNumberDiv.replaceChildren();
+
+      for (let i = 0; i < data.length; i++) {
+        lineNumberDiv.insertAdjacentHTML("beforeend", `<p>${i + 1 + "."}</p>`);
+      }
+      if (e.keyCode == 13) {
+        lineNumberDiv.insertAdjacentHTML(
+          "beforeend",
+          `<p>${len + 1 + "."}</p>`
+        );
+      }
+
+      let { value, selectionStart, selectionEnd } = editor;
+      if (e.keyCode === 9) {
+        // TAB = 9
+        e.preventDefault();
+        editor.value =
+          value.slice(0, selectionStart) + "\t" + value.slice(selectionEnd);
+        editor.setSelectionRange(selectionStart + 2, selectionStart + 2);
+      }
+      selectEditor();
+    });
+
+    editor.addEventListener("click", (e) => {
+      selectEditor();
+    });
+
+    const selectEditor = () => {
+      let { value, selectionStart, selectionEnd } = editor;
+
+      let word = value.slice(0, selectionEnd);
+      let len = word.split("\n").length;
+      //console.log(lineNumberDiv.childNodes[len-1].style.backgroundColor="red")
+      let l = lineNumberDiv.childNodes.length;
+      for (let i = 0; i < l; i++) {
+        lineNumberDiv.childNodes[i].classList.remove("bg-yellow-100");
+      }
+      lineNumberDiv.childNodes[len - 1].classList.add("bg-yellow-100");
+    };
+  </script>
+</html>
